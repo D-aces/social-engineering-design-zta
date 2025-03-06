@@ -91,8 +91,8 @@ services:
       - --store=tikv
       - --path=pd-pol:3379
     ports:
-      - "5000:5000"
-      - "11080:11080"
+      - "5000:4000"
+      - "11080:10080"
     depends_on:
       - pd-pol
       - tikv-pol
@@ -132,8 +132,8 @@ services:
       - --store=tikv
       - --path=pd-ass:4379
     ports:
-      - "6000:6000"
-      - "12080:12080"
+      - "6000:4000"
+      - "12080:10080"
     depends_on:
       - pd-ass
       - tikv-ass
