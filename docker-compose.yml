@@ -1,5 +1,5 @@
 services:
-  broker:
+  broker: # Kafka communication bus
     image: apache/kafka:3.9.0
     container_name: kafka
     environment:
@@ -16,7 +16,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_NUM_PARTITIONS: 3
   
-  pd-cred:
+  pd-cred: # Stores the metadata for credentials, Placement Driver server, essentially it will direct traffic. 
     image: pingcap/pd:v8.5.1
     container_name: pd-cred
     command:
@@ -31,7 +31,7 @@ services:
       - "2379:2379"
     restart: unless-stopped
 
-  tikv-cred:
+  tikv-cred: # The physical storage 
     image: pingcap/tikv:v8.5.1
     container_name: tikv-cred
     command:
@@ -43,7 +43,7 @@ services:
       - pd-cred
     restart: unless-stopped
 
-  tidb-cred:
+  tidb-cred: # The SQL connection handler for the credentials 
     image: pingcap/tidb:v8.5.1
     container_name: tidb-cred
     command:
@@ -57,7 +57,7 @@ services:
       - tikv-cred
     restart: unless-stopped
 
-  pd-pol:
+  pd-pol: # Stores the meta data for policy
     image: pingcap/pd:v8.5.1
     container_name: pd-pol
     command:
@@ -72,7 +72,7 @@ services:
       - "3379:3379"
     restart: unless-stopped
 
-  tikv-pol:
+  tikv-pol: # Stores the physical data
     image: pingcap/tikv:v8.5.1
     container_name: tikv-pol
     command:
@@ -84,7 +84,7 @@ services:
       - pd-pol
     restart: unless-stopped
 
-  tidb-pol:
+  tidb-pol: # Handles the SQL connection to the policy containers 
     image: pingcap/tidb:v8.5.1
     container_name: tidb-pol
     command:
@@ -98,7 +98,7 @@ services:
       - tikv-pol
     restart: unless-stopped
 
-  pd-ass:
+  pd-ass: # Holds metadata for the assets 
     image: pingcap/pd:v8.5.1
     container_name: pd-ass
     command:
@@ -113,7 +113,7 @@ services:
       - "4379:4379"
     restart: unless-stopped
 
-  tikv-ass:
+  tikv-ass: # Holds the physical copy of the data 
     image: pingcap/tikv:v8.5.1
     container_name: tikv-ass
     command:
@@ -125,7 +125,7 @@ services:
       - pd-ass
     restart: unless-stopped
 
-  tidb-ass:
+  tidb-ass: # Handles the SQL connection to the assets 
     image: pingcap/tidb:v8.5.1
     container_name: tidb-ass
     command:
@@ -139,7 +139,7 @@ services:
       - tikv-ass
     restart: unless-stopped
 
-  admin-tomcat:
+  admin-tomcat: # Admin webserver container
     image: tomcat:9.0.100-jdk21-corretto
     ports:
       - "8080:8080"
@@ -149,7 +149,7 @@ services:
       - ./admin-tomcat/logs/:/usr/local/tomcat/logs/
     restart: unless-stopped
     
-  api-tomcat:
+  api-tomcat: # Handles the REST endpoints 
     image: tomcat:9.0.100-jdk21-corretto
     ports:
       - "80:8080"
