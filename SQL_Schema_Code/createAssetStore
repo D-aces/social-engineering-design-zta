@@ -1,0 +1,7 @@
+CREATE DATABASE Asset;
+USE Asset;
+
+CREATE TABLE Assets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    identifier VARCHAR(255) NOT NULL
+);
