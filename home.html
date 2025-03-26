@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zero Trust - Home</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-section {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      min-height: 100px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Zero Trust</h1>
+
+  <div class="form-section">
+    <form id="resourceForm">
+      <label for="resourceInput">Enter the name of the resource you would like to access:</label>
+      <input type="text" id="resourceInput" name="resource" required />
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="result" id="resourceDisplay">
+      <!-- Resource content will be shown here -->
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('resourceForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const resourceName = document.getElementById('resourceInput').value;
+      
+      fetch(`/resources/${resourceName}.txt`)
+        .then(response => {
+          if (!response.ok) throw new Error("Resource not found");
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById('resourceDisplay').textContent = data;
+        })
+        .catch(error => {
+          document.getElementById('resourceDisplay').textContent = "Error: " + error.message;
+        });
+    });
+  </script>
+
+</body>
+</html>
