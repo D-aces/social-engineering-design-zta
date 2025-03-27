@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS credential_store;
+USE credential_store;
+
 CREATE TABLE users (
     uuid        VARCHAR(36) PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
