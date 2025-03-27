@@ -8,10 +8,11 @@ CREATE TABLE users (
 );
 
 CREATE TABLE logins (
-    id          SERIAL PRIMARY KEY,
-    uuid   VARCHAR(64) REFERENCES users(uuid),
-    time        TIMESTAMP NOT NULL,
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    user_uuid   VARCHAR(36),
+    time        DATETIME NOT NULL,
     location    VARCHAR(255),
     device      VARCHAR(255),
-    expiry      TIMESTAMP
+    expiry      DATETIME,
+    FOREIGN KEY (user_uuid) REFERENCES users(uuid)
 );
