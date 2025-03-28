@@ -2,46 +2,57 @@ package app;
 
 import static spark.Spark.*;
 import com.google.gson.*;
-import java.util.Optional;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ResourceController {
     public static void initRoutes() {
-        get("/resource/:id", (req, res) -> {
+        get("/search", (req, res) -> {
             res.type("application/json");
-
-            // Get the token from the Authorization header
-            String authHeader = req.headers("Authorization");
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                res.status(401);
-                return new Gson().toJson(new ErrorResponse("Missing or invalid Authorization header"));
+        
+            String query = req.queryParams("query");
+            String username = req.queryParams("username");
+        
+            if (query == null || username == null || query.isEmpty() || username.isEmpty()) {
+                res.status(400);
+                return "{\"error\":\"Missing query or username\"}";
             }
-
-            String token = authHeader.substring(7); // Strip "Bearer "
-
-            // Validate token
-            if (!TokenManager.isValid(token)) {
-                res.status(401);
-                return new Gson().toJson(new ErrorResponse("Invalid or expired token"));
+        
+            Gson gson = new Gson();
+            JsonArray results = new JsonArray();
+        
+            try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample_assets.json")) {
+                if (is == null) {
+                    res.status(500);
+                    return "{\"error\":\"Asset file not found\"}";
+                }
+        
+                InputStreamReader reader = new InputStreamReader(is);
+                JsonArray allAssets = gson.fromJson(reader, JsonArray.class);
+        
+                for (JsonElement el : allAssets) {
+                    JsonObject obj = el.getAsJsonObject();
+        
+                    // 👇 match on both user and query term (in uri or contents)
+                    boolean isOwner = username.equals(obj.get("owner_uuid").getAsString());
+                    boolean matchesQuery = obj.get("uri").getAsString().contains(query) ||
+                                            obj.get("contents").getAsString().contains(query);
+        
+                    if (isOwner && matchesQuery) {
+                        JsonObject filtered = new JsonObject();
+                        filtered.add("uri", obj.get("uri"));
+                        filtered.add("contents", obj.get("contents"));
+                        results.add(filtered);
+                    }
+                }
+            } catch (Exception e) {
+                res.status(500);
+                return "{\"error\":\"Server error\"}";
             }
-
-            // Load the resource (mocked for now)
-            String id = req.params(":id");
-            Optional<DBEngine.Asset> asset = DBEngine.getAssetById(id);
-
-
-            if (asset.isPresent()) {
-                return new Gson().toJson(asset.get());
-            } else {
-                res.status(404);
-                return new Gson().toJson(new ErrorResponse("Asset not found"));
-            }
+        
+            return gson.toJson(results);
         });
-    }
-
-    static class ErrorResponse {
-        String error;
-        ErrorResponse(String error) {
-            this.error = error;
-        }
+        
     }
 }

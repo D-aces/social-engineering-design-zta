@@ -29,33 +29,56 @@
         </div>
     </div>
 
+    <!-- Search Bar -->
+    <div class="mb-3 mt-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search assets by keyword...">
+        <button class="btn btn-secondary mt-2" onclick="performSearch()">Search</button>
+    </div>
+
+    <!-- Search Results -->
+    <div id="resultsContainer" class="mt-4"></div>
+
     <!-- Bootstrap JS (for toast functionality) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // Show the toast on page load
+        // Show success toast on page load
         window.addEventListener('load', () => {
             const toastEl = document.querySelector('.toast');
             const toast = new bootstrap.Toast(toastEl);
             toast.show();
         });
-    
-        const username = localStorage.getItem("username");
-        if (username) {
-            document.getElementById("userName").textContent = username;
-        }
 
-        // Example: display token stored from verification success
-        const token = localStorage.getItem("token");
-        if (token) {
-            document.getElementById("tokenText").textContent = token;
-            document.getElementById("tokenAlert").style.display = "block";
-        }
+        function performSearch() {
+    const query = document.getElementById('searchInput').value;
+    const username = localStorage.getItem("username"); // 👈 grab stored user
 
-        function logout() {
-            localStorage.removeItem("token");
-            window.location.href = "/login.html";
-        }
+    fetch(`/search?query=${encodeURIComponent(query)}&username=${encodeURIComponent(username)}`)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = ""; // Clear old results
+
+            if (data.length === 0) {
+                container.innerHTML = "<p>No assets found.</p>";
+            } else {
+                data.forEach(asset => {
+                    const card = document.createElement('div');
+                    card.className = "card mb-3 p-3";
+                    card.innerHTML = `
+                        <h5><strong>URI:</strong> ${asset.uri}</h5>
+                        <p><strong>Contents:</strong> ${asset.contents}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Search failed:", error);
+            alert("An error occurred while searching.");
+        });
+}
+
     </script>
-
 </body>
 </html>
