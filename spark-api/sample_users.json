@@ -1,0 +1,18 @@
+[
+  {
+    "uuid": "user-1234",
+    "name": "Nathan",
+    "password": "password123",
+    "email": "nathan@example.com",
+    "tfa": false,
+    "status": "active"
+  },
+  {
+    "uuid": "user-5678",
+    "name": "Jhin",
+    "password": "deadlyartist",
+    "email": "jhin@example.com",
+    "tfa": true,
+    "status": "active"
+  }
+]

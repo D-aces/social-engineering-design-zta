@@ -1,0 +1,16 @@
+[
+  {
+    "uuid": "asset-aaa1",
+    "uri": "/files/secret1.txt",
+    "owner_uuid": "user-1234",
+    "sensitivity": 5,
+    "location": "datacenter-1"
+  },
+  {
+    "uuid": "asset-bbb2",
+    "uri": "/files/public_doc.pdf",
+    "owner_uuid": "user-5678",
+    "sensitivity": 1,
+    "location": "datacenter-2"
+  }
+]
