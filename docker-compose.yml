@@ -98,6 +98,16 @@ services:
       - tikv-pol
     restart: unless-stopped
 
+  tidb-stub:
+    image: amazoncorretto:21
+    container_name: tidb-stub
+    command:
+    - java
+    - -jar
+    - /app.jar
+    volumes:
+      - ./app.jar:/app.jar
+
   pd-ass: # Holds metadata for the assets 
     image: pingcap/pd:v8.5.1
     container_name: pd-ass
