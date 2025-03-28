@@ -2,8 +2,13 @@ package app;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
+
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +22,7 @@ public class DBEngine {
         String email;
         boolean tfa;
         String status;
+        String rank;
     }
 
     static class Asset {
@@ -25,13 +31,19 @@ public class DBEngine {
         String owner_uuid;
         int sensitivity;
         String location;
+        String rank;
     }
 
     public static boolean validateUser(String username, String password) {
         System.out.println("Checking username: " + username + ", password: " + password);
         try {
             Gson gson = new Gson();
-            FileReader reader = new FileReader("sample_users.json");
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample_users.json");
+            if (is == null) {
+                throw new FileNotFoundException("sample_users.json not found in resources!");
+            }
+            Reader reader = new InputStreamReader(is);
+
             Type userListType = new TypeToken<List<User>>() {}.getType();
             List<User> users = gson.fromJson(reader, userListType);
 
@@ -49,7 +61,12 @@ public class DBEngine {
     public static Optional<Asset> getAssetById(String uuid) {
         try {
             Gson gson = new Gson();
-            FileReader reader = new FileReader("sample_assets.json");
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("sample_assets.json");
+            if (is == null) {
+                throw new FileNotFoundException("sample_users.json not found in resources!");
+            }
+            Reader reader = new InputStreamReader(is);
+
             Type assetListType = new TypeToken<List<Asset>>() {}.getType();
             List<Asset> assets = gson.fromJson(reader, assetListType);
 

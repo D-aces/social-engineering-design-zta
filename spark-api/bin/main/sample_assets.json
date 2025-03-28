@@ -5,7 +5,8 @@
     "owner_uuid": "Nathan",
     "sensitivity": 5,
     "location": "datacenter-1",
-    "contents": "Hey cutie <3"
+    "contents": "Hey cutie <3",
+    "rank": "1"
   },
   {
     "uuid": "asset-bbb2",
@@ -13,6 +14,7 @@
     "owner_uuid": "Jhin",
     "sensitivity": 1,
     "location": "datacenter-2",
-    "contents": "Ew Gross"
+    "contents": "Ew Gross",
+    "rank": "1"
   }
 ]

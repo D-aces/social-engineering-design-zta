@@ -4,8 +4,9 @@
     "name": "Nathan",
     "password": "password123",
     "email": "nathan@example.com",
-    "tfa": false,
-    "status": "active"
+    "tfa": true,
+    "status": "active",
+    "rank": "1"
   },
   {
     "uuid": "user-5678",
@@ -13,6 +14,7 @@
     "password": "deadlyartist",
     "email": "jhin@example.com",
     "tfa": true,
-    "status": "active"
+    "status": "active",
+    "rank": "2"
   }
 ]
